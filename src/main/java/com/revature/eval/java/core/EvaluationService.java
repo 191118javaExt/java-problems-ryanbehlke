@@ -1,9 +1,13 @@
 package com.revature.eval.java.core;
 
+import static org.junit.Assert.assertEquals;
+
 import java.time.temporal.Temporal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import org.junit.Test;
+import java.util.Scanner; 
 public class EvaluationService {
 
 	/**
@@ -33,29 +37,20 @@ public class EvaluationService {
 	 * @param phrase
 	 * @return
 	 */
-	public String acronym(String phrase) {
-		
-		String acr = new String("");
-		acr += phrase.charAt(0); 
-		int i = 1; 
-		int j = 1; 
-		while (i < phrase.length() && i != 0) {
-			String remainder = phrase.substring(i + 1 + j);
-			acr += phrase.charAt(remainder.indexOf(" ") + i + j);
-			j = i; 
-			i += (remainder.indexOf(" ") + 1 + j); 
-		}
-		
-		return acr.toUpperCase(); 
-			
-			
-		/*
-		for(int i = 0; i < phrase.length(); i++) {
-			i += phrase.indexOf(" ") + 1
-		}
-		return null;
-		*/
-	}
+public String acronym(String phrase) {
+	/*String acr = new String(" ");
+	acr += phrase.charAt(0); 
+	int i = 1; 
+	int j = 1; 
+	while (i < phrase.length() && i != 0) {
+		String remainder = phrase.substring(i + 1 + j);
+		acr += phrase.charAt(remainder.indexOf(" ") + i + j);
+		j = i; 
+		i += (remainder.indexOf(" ") + 1 + j); 
+	}*/
+
+	return null; 	
+}
 
 	/**
 	 * 3. Determine if a triangle is equilateral, isosceles, or scalene. An
@@ -107,21 +102,30 @@ public class EvaluationService {
 		}
 
 		public boolean isEquilateral() {
-			// TODO Write an implementation for this method declaration
-			return false;
+			if( sideOne == sideTwo && sideTwo == sideThree) {
+				return true; 
+			}
+			else{ return false;}
 		}
 
 		public boolean isIsosceles() {
-			// TODO Write an implementation for this method declaration
-			return false;
+			if(sideOne == sideTwo || sideTwo == sideThree)
+				return true;
+			else {return false; }
 		}
+		
+		
 
 		public boolean isScalene() {
-			// TODO Write an implementation for this method declaration
-			return false;
+			if(sideOne != sideTwo && sideTwo != sideThree) {
+				return true; 
+			}
+			else {return false;
+			}
 		}
 
 	}
+
 
 	/**
 	 * 4. Given a word, compute the scrabble score for that word.
@@ -138,13 +142,72 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	private Map<Character, Integer> tileScores;
 	public int getScrabbleScore(String string) {
-		// TODO Write an implementation for this method declaration
-		return 0;
-	}
 
+		final Map<Character, Integer> tileScores; 
+		 
+		return 0; 
+	}
+	
+	public void getScrabbleScore() {
+		char[] tiles = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray(); 
+		
+		int[] scores = new int[] {
+			1,3,2,1,4,2,4,1,8,5,1,3,1,1,3,10,1,1,1,1,4,4,8,4,10	
+		};
+		
+		HashMap<Object, Object> tileScores = new HashMap<>(); 
+		
+		for(int i = 0; i < tiles.length; i++) {
+			char tile = tiles[i]; 
+			int score = scores[i]; 
+			tileScores.put(tile, score); 
+		}
+	}
+	
+	public int scoreForEachTile(char tile) {
+		
+		tile = Character.toUpperCase(tile); 
+		
+		if(tileScores.containsKey(tile)) {
+			return tileScores.get(tile); 
+			
+		} else {
+		return 0;
+		}
+	}
+	
+	public int scoreForWord(String word) {
+		char[] tiles = word.toCharArray(); 
+		
+		int score = 0; 
+		for(char tile : tiles) {
+			score += scoreForEachTile(tile); 
+		}
+		return score; 
+	}
+	
+	public String highestScoringWord(List<String> words) {
+		
+		String bestWord = null; 
+		int bestScore = 0; 
+		for(String word : words) {
+			int score = scoreForWord(word); 
+			if(score > bestScore){
+				bestWord = word; 
+				bestScore = score; 
+			}
+		}
+		
+		return bestWord; 
+	}
+	
+
+	
+		    
 	/**
-	 * 5. Clean up user-entered phone numbers so that they can be sent SMS messages.
+	 * 5. Clean up user-entered phone numbers so that they can be sent as SMS messages.
 	 * 
 	 * The North American Numbering Plan (NANP) is a telephone numbering system used
 	 * by many countries in North America like the United States, Canada or Bermuda.
@@ -268,9 +331,34 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
-	public String toPigLatin(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+	public String toPigLatin(String string) {   
+		class GFG { 
+		boolean isVowel(char c) { 
+			return (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' || 
+					c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'); 
+		} 
+
+		String pigLatin(String s) { 
+ 
+			int len = s.length(); 
+			int index = -1; 
+			for (int i = 0; i < len; i++) 
+			{ 
+				if (isVowel(s.charAt(i))) { 
+				index = i; 
+				break; 
+			} 
+			}  
+			if (index == -1) 
+				return "-1"; 
+ 
+			return s.substring(index) + 
+				s.substring(0, index) + "ay"; 
+		} 
+		 
+		} 
+		  
+			return null;
 	}
 
 	/**
@@ -303,10 +391,28 @@ public class EvaluationService {
 	 * @param l
 	 * @return
 	 */
-	public List<Long> calculatePrimeFactorsOf(long l) {
-		// TODO Write an implementation for this method declaration
-		return null;
+	public boolean calculatePrimeFactorsOf(long l) {
+		
+			int i, m=0, flag=0; 
+			int n = 3;
+			m=n/2;  
+			if(n==0||n==1) {
+				return false;
+			}else {
+				for(i=2; i<=m; i++) {
+					if(n%i==0)
+					return false;
+					flag = 1; 
+					break; 
+				}
+			}
+			if (flag==0) {
+				return true;
+			}
+			return (Boolean) null; 
 	}
+		
+
 
 	/**
 	 * 11. Create an implementation of the rotational cipher, also sometimes called
@@ -563,5 +669,6 @@ public class EvaluationService {
 		// TODO Write an implementation for this method declaration
 		return 0;
 	}
-
 }
+
+
