@@ -3,11 +3,14 @@ package com.revature.eval.java.core;
 import static org.junit.Assert.assertEquals;
 
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;
-import java.util.Scanner; 
+import java.util.Scanner;
+import java.util.Set; 
 public class EvaluationService {
 
 	/**
@@ -37,20 +40,24 @@ public class EvaluationService {
 	 * @param phrase
 	 * @return
 	 */
-public String acronym(String phrase) {
-	/*String acr = new String(" ");
-	acr += phrase.charAt(0); 
-	int i = 1; 
-	int j = 1; 
-	while (i < phrase.length() && i != 0) {
-		String remainder = phrase.substring(i + 1 + j);
-		acr += phrase.charAt(remainder.indexOf(" ") + i + j);
-		j = i; 
-		i += (remainder.indexOf(" ") + 1 + j); 
-	}*/
+	public String acronym(String phrase) {
+	
+		String acr = new String("");
+		acr += phrase.charAt(0);
+		phrase = phrase.replace("-", " ");
+		int bigIndex = 1;
+		int indexDiff = 0;
+		
+		while((bigIndex + indexDiff) <= phrase.length()) {
+			String remainder = phrase.substring(bigIndex);
+			indexDiff = (bigIndex - (remainder.indexOf(" ")) * -1);
+			acr += remainder.charAt((remainder.indexOf(" ") + 1));
+			bigIndex += (remainder.indexOf(" ") +1);
+			
+		}
+		return acr.toUpperCase();
+	}
 
-	return null; 	
-}
 
 	/**
 	 * 3. Determine if a triangle is equilateral, isosceles, or scalene. An
@@ -142,69 +149,28 @@ public String acronym(String phrase) {
 	 * @param string
 	 * @return
 	 */
-	private Map<Character, Integer> tileScores;
-	public int getScrabbleScore(String string) {
-
-		final Map<Character, Integer> tileScores; 
-		 
-		return 0; 
-	}
 	
-	public void getScrabbleScore() {
-		char[] tiles = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray(); 
+	public int getScrabbleScore(String string) {
+		 String[] tiles = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(" "); 
 		
-		int[] scores = new int[] {
+		int[] scores = {
 			1,3,2,1,4,2,4,1,8,5,1,3,1,1,3,10,1,1,1,1,4,4,8,4,10	
 		};
 		
-		HashMap<Object, Object> tileScores = new HashMap<>(); 
+	 HashMap<String, Integer> tileScores = new HashMap<>(); 
 		
 		for(int i = 0; i < tiles.length; i++) {
-			char tile = tiles[i]; 
+			String tile = tiles[i]; 
 			int score = scores[i]; 
 			tileScores.put(tile, score); 
 		}
+		int score = 0;
+	for(int i = 0; i < string.length(); i++) {	
+		String s = Character.toString(string.charAt(i));
+		score += tileScores.get(s);
 	}
-	
-	public int scoreForEachTile(char tile) {
-		
-		tile = Character.toUpperCase(tile); 
-		
-		if(tileScores.containsKey(tile)) {
-			return tileScores.get(tile); 
-			
-		} else {
-		return 0;
-		}
+	return score;
 	}
-	
-	public int scoreForWord(String word) {
-		char[] tiles = word.toCharArray(); 
-		
-		int score = 0; 
-		for(char tile : tiles) {
-			score += scoreForEachTile(tile); 
-		}
-		return score; 
-	}
-	
-	public String highestScoringWord(List<String> words) {
-		
-		String bestWord = null; 
-		int bestScore = 0; 
-		for(String word : words) {
-			int score = scoreForWord(word); 
-			if(score > bestScore){
-				bestWord = word; 
-				bestScore = score; 
-			}
-		}
-		
-		return bestWord; 
-	}
-	
-
-	
 		    
 	/**
 	 * 5. Clean up user-entered phone numbers so that they can be sent as SMS messages.
@@ -238,8 +204,17 @@ public String acronym(String phrase) {
 	 * NANP-countries, only 1 is considered a valid country code.
 	 */
 	public String cleanPhoneNumber(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		String ans = " "; 
+		String numbers = "0123456789"; 
+		String input = null;
+		for (int i = 0; i < input.length(); i++) {
+			char c = input.charAt(i); 
+			if(numbers.contains(Character.toString(c))) {
+				ans += Character.toString(c); 
+			}
+		}
+		
+		return ans;
 	}
 
 	/**
@@ -251,10 +226,21 @@ public String acronym(String phrase) {
 	 * @param string
 	 * @return
 	 */
-	public Map<String, Integer> wordCount(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
-	}
+	public Map<String, Integer> wordCount(String input) {
+		Map<String, Integer> map = new HashMap<>();    
+		String [] arr = input.split(" "); 
+		for(String s : arr) {
+			if(map.containsKey(s)) {
+				int i = map.get(s); 
+				i++; 
+				map.replace(s, i);
+			}
+			else {
+				map.put(s,1); 
+			}
+		}
+		return map;  
+		}
 
 	/**
 	 * 7. Implement a binary search algorithm.
@@ -331,34 +317,32 @@ public String acronym(String phrase) {
 	 * @param string
 	 * @return
 	 */
-	public String toPigLatin(String string) {   
-		class GFG { 
-		boolean isVowel(char c) { 
-			return (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' || 
-					c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'); 
+	
+	public  String toPigLatin(String string) {		
+		String [] arr = string.split(" "); 
+		String answer = ""; 
+		for(String s: arr) {
+			answer += changedWord(s) + " "; 
 		} 
-
-		String pigLatin(String s) { 
- 
-			int len = s.length(); 
-			int index = -1; 
-			for (int i = 0; i < len; i++) 
-			{ 
-				if (isVowel(s.charAt(i))) { 
-				index = i; 
-				break; 
-			} 
-			}  
-			if (index == -1) 
-				return "-1"; 
- 
-			return s.substring(index) + 
-				s.substring(0, index) + "ay"; 
-		} 
-		 
-		} 
-		  
-			return null;
+		return answer.substring(0, answer.length() -1);	
+	}
+	
+	private  String changedWord(String s) {
+			char letter = s.charAt(0); 
+			String vowels = "aeiou"; 
+			if(vowels.contains(Character.toString(letter))) 
+				return s + "ay"; 
+			else if(s.charAt(0) == 'q') { 
+				return s.substring(2) + s.substring(0,2) +"ay";
+			}
+			else {
+				for(int i = 0; i < s.length(); i++) {
+					if(vowels.contains(Character.toString(s.charAt(i))))
+							return s.substring(i) + s.substring(0,i) + "ay"; 
+				}
+			}
+				
+		return "";				
 	}
 
 	/**
@@ -377,8 +361,22 @@ public String acronym(String phrase) {
 	 * @return
 	 */
 	public boolean isArmstrongNumber(int input) {
-		// TODO Write an implementation for this method declaration
+		int length = Integer.toString(input).length();
+		int x = input;
+		int calc = 0;
+		int z = 0;
+		int y = 0;
+		while(z < length) {
+			y = input % 10;
+			calc += (Math.pow(y, length));
+			z++;
+			input = input / 10;
+		}
+		if(calc == x) {
+			return true;
+		} else {
 		return false;
+		}
 	}
 
 	/**
@@ -391,29 +389,22 @@ public String acronym(String phrase) {
 	 * @param l
 	 * @return
 	 */
-	public boolean calculatePrimeFactorsOf(long l) {
+		public List<Long> calculatePrimeFactorsOf(long l) {
 		
-			int i, m=0, flag=0; 
-			int n = 3;
-			m=n/2;  
-			if(n==0||n==1) {
-				return false;
-			}else {
-				for(i=2; i<=m; i++) {
-					if(n%i==0)
-					return false;
-					flag = 1; 
-					break; 
-				}
+			List<Long> theList = new ArrayList<Long>();
+	
+			Long orig = l;
+			for(Long i=2L; i <= (orig/2) + 1; i++) {
+				if(l%i == 0) {
+					while(l%i == 0) {
+						theList.add((theList.size()), i);
+						l /= i;
+					}
+				} 
 			}
-			if (flag==0) {
-				return true;
-			}
-			return (Boolean) null; 
-	}
+			return theList;
+		}
 		
-
-
 	/**
 	 * 11. Create an implementation of the rotational cipher, also sometimes called
 	 * the Caesar cipher.
@@ -449,8 +440,25 @@ public String acronym(String phrase) {
 		}
 
 		public String rotate(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			Map<String, Integer> Map = new HashMap<>(); 
+			String s = "abcdefghijklmnopqrstuvwxyz"; 
+			String answer = "";
+			for(int i = 0; i < string.length(); i++) {
+					char c	= string.charAt(i); // grabing each char in the string
+					String letter = Character.toString(c); // changing each char to String 
+					if(s.contains(letter)) { // checking if the letter is the english alphabet
+						int index = s.indexOf(letter);
+						int newIndex = (index + key) % s.length();
+						char replacedLetter = s.charAt(newIndex);
+						String newLetter = Character.toString(replacedLetter);
+						answer = answer + newLetter;
+					}else {
+						answer += Character.toString(s.charAt(i));
+					}
+					
+			}
+			
+			return answer;
 		}
 
 	}
@@ -467,10 +475,32 @@ public String acronym(String phrase) {
 	 * @param i
 	 * @return
 	 */
-	public int calculateNthPrime(int i) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+	public static int calculateNthPrime(int i) {
+		List<Integer> primes = new ArrayList<>();
+		
+		if (i < 1) {throw new IllegalArgumentException("input must be positive");
+		}
+		
+		for(int j = 2; primes.size() <= i; j++) {
+			if(isPrime(j)) {
+				primes.add(j);
+			}
+		} 
+		return primes.get((i - 1));
+	} 
+	public static boolean isPrime(int i) {
+		boolean prime;
+		int j = 2;
+		while(j <= i/2) {
+			if(i % j == 0) {
+				return false;
+			} else {
+				j++;
+			}
+		}
+		return true;
 	}
+	
 
 	/**
 	 * 13 & 14. Create an implementation of the atbash cipher, an ancient encryption
@@ -505,8 +535,34 @@ public String acronym(String phrase) {
 		 * @return
 		 */
 		public static String encode(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			String input = string.toLowerCase();
+			String output = new String("");
+			
+			Map<Character, Character> encodeIt = new HashMap<>();
+			encodeIt.put('a', 'z'); encodeIt.put('b', 'y'); encodeIt.put('c', 'x'); encodeIt.put('d', 'w'); encodeIt.put('e', 'v'); 
+			encodeIt.put('f', 'u'); encodeIt.put('g', 't'); encodeIt.put('h', 's'); encodeIt.put('i', 'r'); encodeIt.put('j', 'q'); 
+			encodeIt.put('k', 'p'); encodeIt.put('l', 'o'); encodeIt.put('m', 'n'); encodeIt.put('n', 'm'); encodeIt.put('o', 'l'); 
+			encodeIt.put('p', 'k'); encodeIt.put('q', 'j'); encodeIt.put('r', 'i'); encodeIt.put('s', 'h'); encodeIt.put('t', 'g'); 
+			encodeIt.put('u', 'f'); encodeIt.put('v', 'e'); encodeIt.put('w', 'd'); encodeIt.put('x', 'c'); encodeIt.put('y', 'b');
+			encodeIt.put('z', 'a'); encodeIt.put('0', '0'); encodeIt.put('1', '1'); encodeIt.put('2', '2'); encodeIt.put('3', '3');
+			encodeIt.put('4', '4'); encodeIt.put('5', '5'); encodeIt.put('6', '6'); encodeIt.put('7', '7'); encodeIt.put('8', '8');
+			encodeIt.put('9', '9');
+			
+			int space = 0;
+			
+			for(int i = 0; i < input.length(); i++) {
+				if(encodeIt.containsKey(input.charAt(i))) {
+					output += encodeIt.get(input.charAt(i));
+					space++;
+					if(space % 5 == 0) {
+						output += " ";
+					}
+				}
+			}
+			if((output.charAt((output.length() - 1))) == ' ') {
+				output= output.substring(0, output.length() - 1);
+			}
+			return output;
 		}
 
 		/**
@@ -516,11 +572,25 @@ public String acronym(String phrase) {
 		 * @return
 		 */
 		public static String decode(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			String output = "";
+			String input = string.replace(" ", "").toLowerCase();
+			
+			Map<Character, Character> decodeIt = new HashMap<>();
+			decodeIt.put('z', 'a'); decodeIt.put('y', 'b'); decodeIt.put('x', 'c'); decodeIt.put('w', 'd'); decodeIt.put('v', 'e');
+			decodeIt.put('u', 'f'); decodeIt.put('t', 'g'); decodeIt.put('s', 'h'); decodeIt.put('r', 'i'); decodeIt.put('q', 'j'); 
+			decodeIt.put('p', 'k'); decodeIt.put('o', 'l'); decodeIt.put('n', 'm'); decodeIt.put('m', 'n'); decodeIt.put('l', 'o'); 
+			decodeIt.put('k', 'p'); decodeIt.put('j', 'q'); decodeIt.put('i', 'r'); decodeIt.put('h', 's'); decodeIt.put('g', 't'); 
+			decodeIt.put('f', 'u'); decodeIt.put('e', 'v'); decodeIt.put('d', 'w'); decodeIt.put('c', 'x'); decodeIt.put('b', 'y'); 
+			decodeIt.put('a', 'z'); decodeIt.put('0', '0'); decodeIt.put('1', '1'); decodeIt.put('2', '2'); decodeIt.put('3', '3'); 
+			decodeIt.put('4', '4'); decodeIt.put('5', '5'); decodeIt.put('6', '6'); decodeIt.put('7', '7'); decodeIt.put('8', '8'); 
+			decodeIt.put('9', '9');
+			
+			for(int i = 0; i < input.length(); i++) {
+				output += decodeIt.get(input.charAt(i));
+			}
+			return output;
 		}
 	}
-
 	/**
 	 * 15. The ISBN-10 verification process is used to validate book identification
 	 * numbers. These normally contain dashes and look like: 3-598-21508-8
@@ -544,8 +614,36 @@ public String acronym(String phrase) {
 	 * @return
 	 */
 	public boolean isValidIsbn(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+
+		int sum = 0;
+		int counter = 10;
+
+		String number = string.replace("-", "");
+
+		for (int i = 0; i < number.length(); i++)
+
+			if ((number.charAt(i) == '0') || (number.charAt(i) == '1') || (number.charAt(i) == '2')
+					|| (number.charAt(i) == '3') || (number.charAt(i) == '4') || (number.charAt(i) == '5')
+					|| (number.charAt(i) == '6') || (number.charAt(i) == '7') || (number.charAt(i) == '8')
+					|| (number.charAt(i) == '9') || (number.charAt(i) == 'X')) {
+				{
+					if (number.charAt(i) == 'X') {
+						sum += 10;
+						counter--;
+					} else {
+						sum += (Integer.parseInt(String.valueOf((number.charAt(i))))   * counter);
+						counter--;
+					}
+				}
+			} else {
+				return false;
+			}
+
+		if (sum % 11 == 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -562,8 +660,19 @@ public String acronym(String phrase) {
 	 * @return
 	 */
 	public boolean isPangram(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+		
+		String input = string.replace(" ", "");
+
+		Set<Character> abc = new HashSet<>();
+
+		for (int i = 0; i < input.length(); i++) {
+			abc.add(input.charAt(i));
+		}
+		if (abc.size() == 26) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -593,8 +702,25 @@ public String acronym(String phrase) {
 	 * @return
 	 */
 	public int getSumOfMultiples(int i, int[] set) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		// initiate a total which is sum of all
+		// iterate over each int value in the set
+		// while multiple is < i {add multiples to total}
+		Set<Integer> numsToAdd = new HashSet<>();
+		
+		int total = 0;
+		for(int j = 0; j < set.length; j++) {
+			int multiplier = 1;
+			int add = 0;
+			while((add + set[j]) < i) {
+				add = set[j] * multiplier;
+				multiplier++;
+				numsToAdd.add(add);
+			}
+		}
+		for(int j : numsToAdd) {
+			total += j;
+		}
+		return total;
 	}
 
 	/**
@@ -634,8 +760,50 @@ public String acronym(String phrase) {
 	 * @return
 	 */
 	public boolean isLuhnValid(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+
+		string = string.replace(" ", "");
+		List<Integer> toAdd = new ArrayList<>();
+		int l = string.length();
+		int f = l - 1;
+		int sum = 0;
+		
+		for (int i = 0; i < l; i++) {
+			if ((string.charAt(i) == '0') || (string.charAt(i) == '1') || (string.charAt(i) == '2')
+					|| (string.charAt(i) == '3') || (string.charAt(i) == '4') || (string.charAt(i) == '5')
+					|| (string.charAt(i) == '6') || (string.charAt(i) == '7') || (string.charAt(i) == '8')
+					|| (string.charAt(i) == '9')) {
+
+			} else {
+				return false;
+			}
+		}
+		
+		while(f >= 1) {
+			if((Integer.parseInt(String.valueOf(string.charAt(f - 1)))) * 2 > 9 ) {
+				toAdd.add(((Integer.parseInt(String.valueOf(string.charAt(f - 1)))) * 2) -9);
+				f -= 2;
+			} 
+			else {
+				toAdd.add(((Integer.parseInt(String.valueOf(string.charAt(f - 1)))) * 2));
+				f -= 2;
+			}
+		}
+		f = l - 1;
+		while(f >= 1) {
+			toAdd.add(Integer.parseInt(String.valueOf(string.charAt(f))));
+			f -= 2;
+		}
+		
+		for(int i: toAdd) {
+			sum += i;
+		}
+		
+		if(sum % 10 == 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**
@@ -665,10 +833,42 @@ public String acronym(String phrase) {
 	 * @param string
 	 * @return
 	 */
+	public static boolean numCheck(String string) {
+		return string.matches("-?\\d+(\\.\\d+)?");
+	}
+	
 	public int solveWordProblem(String string) {
-		// TODO Write an implementation for this method declaration
+		String input = string.substring(8);
+		input = input.replace("?", "");
+		
+		String[] elements = input.split(" ");
+		int[] numbers = new int[2];
+		
+		String operator = "";
+		int j = 0;
+		for(int i = 0; i < elements.length; i++) {
+			if(numCheck(elements[i])) {
+				numbers[j] = Integer.parseInt(elements[i]);
+				j++;
+			} 
+			else if ((!numCheck(elements[i])) && !(elements[i].equals("by"))) {
+				operator += elements[i];
+			}
+			else { 
+			}
+		}
+		switch (operator) {
+		case "plus" :
+			return (numbers[0] + numbers[1]);
+		case "minus" :
+			return (numbers[0] - numbers[1]);
+		case "multiplied" :
+			return (numbers[0] * numbers[1]);
+		case "divided" :
+			return (numbers[0] / numbers [1]);
+		}
 		return 0;
 	}
-}
 
+}
 
